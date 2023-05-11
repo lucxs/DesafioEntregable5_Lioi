@@ -136,47 +136,56 @@ export default class productManager{
                         //LLamo a lista de productos actuales:
                         const actualprods = await this.getProducts();
 
-                        if (actualprods.length == 0) {
-                            console.log("No se puede actualizar nada, el archivo aun está vacio");
-                            return
-                        }else{
+                            // a newObject lo paso a un array
+                        const newObjectsArray = await Object.entries(newObject); 
 
-                            console.log("Usted desea actualizar producto de ID: ",id," campo: ",campo);
+                            // Flateo
 
-                            //Traigo el objeto del id del parametro
-                        const newFilter = await actualprods.filter((prod)=>{
+                            
 
-                            return prod.id === id;
-                        })
+                        return console.log("desde productManager:",newObjectsArray);
 
-                       if (newFilter.length == 0) {
+                    //     if (actualprods.length == 0) {
+                    //         console.log("No se puede actualizar nada, el archivo aun está vacio");
+                    //         return
+                    //     }else{
 
-                        console.log("No existe en la lista un objeto con el ID: ", id," no se puede actualizar nada.");
+                    //         console.log("Usted desea actualizar producto de ID: ",id," campo: ",campo);
 
-                        return
+                    //         //Traigo el objeto del id del parametro
+                    //     const newFilter = await actualprods.filter((prod)=>{
 
-                       }else{
+                    //         return prod.id === id;
+                    //     })
 
-                        //Actualizo
-                        const listUpdated = await newFilter.find((prod)=>{
+                    //    if (newFilter.length == 0) {
 
-                            prod[campo] = newValue;
-                            return prod;
+                    //     console.log("No existe en la lista un objeto con el ID: ", id," no se puede actualizar nada.");
+
+                    //     return
+
+                    //    }else{
+
+                    //     //Actualizo
+                    //     const listUpdated = await newFilter.find((prod)=>{
+
+                    //         prod[campo] = newValue;
+                    //         return prod;
                              
-                         })
-                                //Filtro una nueva lista sin el objeto anterior
-                            const actualprodsupdated = await actualprods.filter(prod => prod.id !== id);
+                    //      })
+                    //             //Filtro una nueva lista sin el objeto anterior
+                    //         const actualprodsupdated = await actualprods.filter(prod => prod.id !== id);
 
-                            await actualprodsupdated.push(listUpdated);
+                    //         await actualprodsupdated.push(listUpdated);
 
-                            await fs.promises.writeFile('./products.json', JSON.stringify(actualprods))
+                    //         await fs.promises.writeFile('./products.json', JSON.stringify(actualprods))
 
-                          console.log("Lista actualizada: ", listUpdated);
+                    //       console.log("Lista actualizada: ", listUpdated);
                         
-                       }
+                    //    }
 
                         
-                        }
+                    //     }
 
                         
 
