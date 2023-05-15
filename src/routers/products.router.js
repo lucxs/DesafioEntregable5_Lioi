@@ -89,15 +89,31 @@ try {
 
             //guardo en newObject lo que recibo del body para actualizar
      let newObject = await req.body;
-     console.log(newObject);
 
-     await prodManager.updateProduct(req.params.pid, newObject);
-
+      await prodManager.updateProduct(req.params.pid, newObject);
 
     
 } catch (error) {
     console.log(error);
 }
+
+})
+
+
+prodsRouter.delete('/:pid', async(req, res)=>{
+
+try {
+
+        await prodManager.deleteProduct(req.params.pid);
+
+        await res.status(200).send({"Producto de ID":req.params.pid+" eliminado"})
+    
+} catch (error) {
+
+    res.status(404).send(error);
+    
+}
+
 
 })
 

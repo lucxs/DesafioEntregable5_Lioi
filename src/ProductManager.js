@@ -4,6 +4,7 @@ import fs from 'fs';
 export default class productManager{
     #id = 0;
     #path = undefined;
+     #quantity = 0;
           constructor(){                 
                         if (!fs.existsSync('./products.json')) {
 
@@ -136,56 +137,53 @@ export default class productManager{
                         //LLamo a lista de productos actuales:
                         const actualprods = await this.getProducts();
 
-                            // a newObject lo paso a un array
-                        const newObjectsArray = await Object.entries(newObject); 
+                        //return console.log("desde productManager:",newObjectsArray);
 
-                            // Flateo
+                        if (actualprods.length == 0) {
+                            console.log("No se puede actualizar nada, el archivo aun está vacio");
+                            return
+                        }else{
 
+                                 // a newObject lo paso a un array
+                                const newObjectsArray = await Object.entries(newObject); 
+
+                            console.log("Usted desea actualizar producto de ID: ",id," campo/s: ",newObjectsArray);
+
+                            //Traigo el objeto del id del parametro
+                        const newFilter = await actualprods.filter((prod)=>{
+
+                            return prod.id === parseInt(id);
+                        })
+
+                       if (newFilter.length == 0) {
+
+                        console.log("No existe en la lista un objeto con el ID: ", id," no se puede actualizar nada.");
+
+                        return
+
+                       }else{
+
+                        //Actualizo
+                        const listUpdated = await newFilter.find((prod)=>{
+
+                            prod[newObjectsArray[0][0]] = newObjectsArray[0][1];
+                            return prod;
                             
-
-                        return console.log("desde productManager:",newObjectsArray);
-
-                    //     if (actualprods.length == 0) {
-                    //         console.log("No se puede actualizar nada, el archivo aun está vacio");
-                    //         return
-                    //     }else{
-
-                    //         console.log("Usted desea actualizar producto de ID: ",id," campo: ",campo);
-
-                    //         //Traigo el objeto del id del parametro
-                    //     const newFilter = await actualprods.filter((prod)=>{
-
-                    //         return prod.id === id;
-                    //     })
-
-                    //    if (newFilter.length == 0) {
-
-                    //     console.log("No existe en la lista un objeto con el ID: ", id," no se puede actualizar nada.");
-
-                    //     return
-
-                    //    }else{
-
-                    //     //Actualizo
-                    //     const listUpdated = await newFilter.find((prod)=>{
-
-                    //         prod[campo] = newValue;
-                    //         return prod;
                              
-                    //      })
-                    //             //Filtro una nueva lista sin el objeto anterior
-                    //         const actualprodsupdated = await actualprods.filter(prod => prod.id !== id);
+                         })
+                                //Filtro una nueva lista sin el objeto anterior
+                            const actualprodsupdated = await actualprods.filter(prod => prod.id !== id);
 
-                    //         await actualprodsupdated.push(listUpdated);
+                            await actualprodsupdated.push(listUpdated);
 
-                    //         await fs.promises.writeFile('./products.json', JSON.stringify(actualprods))
+                            await fs.promises.writeFile('./products.json', JSON.stringify(actualprods))
 
-                    //       console.log("Lista actualizada: ", listUpdated);
+                          console.log("Lista actualizada: ", listUpdated);
                         
-                    //    }
+                       }
 
                         
-                    //     }
+                        }
 
                         
 
@@ -205,14 +203,14 @@ export default class productManager{
 
                         const actualprods = await this.getProducts();
 
-                        const testid = await actualprods.filter(prod => prod.id == id);
+                        const testid = await actualprods.filter(prod => prod.id == parseInt(id));
 
                         if (testid == 0) {
                             console.log("Este producto con el ID: ",id, "no existe en la lista. No se puede eliminar nada");
                             return
                         }else{
 
-                            const listUpdated = await actualprods.filter(prod => prod.id !== id);
+                            const listUpdated = await actualprods.filter(prod => prod.id !== parseInt(id));
 
 
                              await fs.promises.writeFile('./products.json', JSON.stringify(listUpdated))
@@ -232,6 +230,55 @@ export default class productManager{
             }
 
                         
+        }
+
+        //Configurando el auto incremento del quantity
+
+        #getQUANTITY(){
+
+            this.#quantity++;
+            return this.#quantity;
+        }
+
+        //Aqui creo el metodo para tomar unicamente el ID del producto 
+        //Según el PID que me llega desde la solicitud en cartsRouter.post('/:cid/product/:pid')
+
+        async DetailsProdsToCart(pid){
+
+            try {
+                    //Parseo a numerico el PID
+                let id = await parseInt(pid);
+
+                    //Traigo todos los productos de products.json
+                let allProds = await this.getProducts();
+
+
+                const prodsfilter = await allProds.filter( (prod) =>{
+
+                        return prod.id === id ;   
+                })
+
+                
+                    //Genero una copia con MAP agregando el quantity 
+                    //Y lo retorno
+                const prodId = await prodsfilter.map((pd)=>{
+
+                        return{
+
+                            pid: pd.id,
+                            quantity : this.#getQUANTITY()
+                        }
+
+                })
+
+                
+                return prodId;
+                
+            } catch (error) {
+
+                console.log("Hubo un error en ProductManager.DetailsProdsToCart ==>",error);
+                
+            }
 
 
         }
