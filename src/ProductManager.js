@@ -26,9 +26,9 @@ export default class productManager{
                 
             try {
 
-                let allProds = await this.getProducts()
-                let filter = await allProds.filter((element)=>element.code === code )
-                if (filter.length > 0) {
+                const allprods = await this.getProducts();
+                const newfilter = await allprods.filter(element => element.code == code)
+                if (newfilter.length > 0) {
                     
                      console.log("YA EXISTE UN PRODUCTO CON EL CODE QUE INTENTA INGRESAR");
                      return

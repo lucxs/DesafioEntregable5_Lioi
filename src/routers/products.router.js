@@ -63,14 +63,17 @@ prodsRouter.post('/', async(req, res)=>{
 
         //Añado productos
        await prodManager.addProduct("televisor", "Panaphonic", 223655, "thumnail",125544887, 12, true,"televisores");
+
+    //Control de duplicados por CODE
+    await securityFilter(125544887);
        
         await prodManager.addProduct("televisor2", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
+            await securityFilter(1255558742);
         
-        await prodManager.addProduct("televisor3", "Sorny", 552268, "thumnail",125544887, 5, true,"televisores");
-       
-        
-       //Envio respuesta si salio todo bien
-       await res.status(201).send("Se agregó un nuevo producto")
+        // await prodManager.addProduct("televisor4", "Sorny", 552268, "thumnail",125544, 5, true,"televisores");
+
+        // //Control de duplicados por CODE
+        // await securityFilter(125544);
 
         
     } catch (error) {
@@ -78,6 +81,30 @@ prodsRouter.post('/', async(req, res)=>{
         res.status(500).send(error)
         
     }
+
+     async function securityFilter(code){
+
+        try {
+
+            const actualprods = await prodManager.getProducts();
+            const newfilter = await actualprods.filter(element => element.code == code)
+            if (newfilter.length > 0) {
+
+               await res.status(500).send("Este producto con code: "+code+" Ya se encuentra existente en otro producto")
+                
+                 return 
+            }else{
+
+                    await res.status(201).send({"se Agregó un nuevo producto": actualprods})
+
+            }  
+            
+        } catch (error) {
+            console.log("Algo más salió mal en securityFilter ==>",error);
+        }
+
+
+     }
 
     
 })
