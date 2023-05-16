@@ -13,10 +13,9 @@ const cart =  new cartManager();
 //Ruta raiz que crea cart
 cartsRouter.post('/', async(req, res)=>{
 
-        try {
+        try {   
                 await cart.addCart();
-                await cart.addCart();
-                await cart.addCart();
+                
                 await res.status(201).send(cart);
                 
                 
@@ -43,16 +42,26 @@ cartsRouter.get('/:cid', async(req,res)=>{
         }
 
 
-})
+ })
 
 cartsRouter.post('/:cid/product/:pid', async(req, res)=>{
 
                 try {
-                        const prodsDetail = await prodManager.DetailsProdsToCart(req.params.pid)
-                        const updatedCartProd = await cart.addToCart(req.params.cid, prodsDetail);
-                        res.status(200).send(updatedCartProd);
-                        //  cart.addToCart(prodsDetail)
-                        //  res.status(201).send(carts.flat())
+                                //Agrego uno a uno para que impacte la actualizacion del quantity
+                                //Si es que voy al mismo CID de cart. (CID: 4 - PID:2)
+                        // const updatedCartProd1 = await cart.addToCart(req.params.cid, req.params.pid);
+                        // const updatedCartProd2 = await cart.addToCart(req.params.cid, req.params.pid);
+                        // const updatedCartProd3 = await cart.addToCart(req.params.cid, req.params.pid);
+                        // const updatedCartProd4 = await cart.addToCart(req.params.cid, req.params.pid);
+                                
+                        // intento con el siguiente grupo de instancias: (CID: 1 - PID: 1)
+
+                         const updatedCartProd1 = await cart.addToCart(req.params.cid, req.params.pid);
+                         const updatedCartProd2 = await cart.addToCart(req.params.cid, req.params.pid);
+                        // const updatedCartProd3 = await cart.addToCart(req.params.cid, req.params.pid);
+                        // const updatedCartProd4 = await cart.addToCart(req.params.cid, req.params.pid);
+                        res.status(200).send(updatedCartProd2);
+                        
                 } catch (error) {
 
                         res.status(501).send(error)

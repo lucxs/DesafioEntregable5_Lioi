@@ -1,7 +1,12 @@
 import fs from 'fs';
+import productManager from './ProductManager.js';
+
+//Instancio la clase de los productos
+const prodManager = new productManager();
 
 export default class cartManager{
         #id = 0;
+        #quantity = 0;
         #path = undefined;
 
         constructor(){
@@ -14,6 +19,15 @@ export default class cartManager{
 
         this.#path = fs.promises.readFile('./carts.json', 'utf-8');
 
+        }
+
+         #getQUANTITY(){
+
+                this.#quantity++;
+                return this.#quantity;
+                
+        
+            
         }
 
         #getID() {
@@ -31,17 +45,17 @@ export default class cartManager{
                     };
 
                     //Le agrego el ID
-                    cartProducts.id = await this.#getID();
+                    cartProducts.cid = await this.#getID();
 
                     //Traigo el array de carts
                     const allCarts = await this.getCarts();
 
                     //Filtro por si ya existe para controlar que no se duplique
-                    const filtro = await allCarts.filter(cart => cart.id == cartProducts.id )
+                    const filtro = await allCarts.filter(cart => cart.cid == cartProducts.cid )
 
                     if (filtro.length) {
 
-                    console.log("Este producto de ID: ",cart.id, "ya existe");
+                    await console.log("Este producto de ID: ",cartProducts.cid, "ya existe");
 
                     return
                     
@@ -107,29 +121,95 @@ export default class cartManager{
 
         }
 
-        async addToCart(cid, prodsDetail){
+        
+
+        async addToCart(cid, pid){
 
             try {
-                    let id = await parseInt(cid); 
+                     
+                     //Traigo todo el array de carts.json
                     const allCarts = await this.getCarts();
 
-                     const filterProdCart = await allCarts.filter((prod) =>{
+                    //Filtro por seleccion de CID
+                      const filterProdCart = await allCarts.filter((prod) =>{
 
-                         return prod.id == id
-                     } )
-                      const updatingProdCart = await filterProdCart.map((prodcart)=>{
+                          return prod.cid == cid
+                      } )
 
-                             return {
-                                cid: prodcart.id,
-                                pid: prodsDetail.pid,
-                                quantity: prodsDetail.quantity
-                             }
 
-                      }) 
 
-                    // filterProdCart.push(prodsDetail)
+                        // return filterProdCart
+/////////////////--------------------------------------------///////////////////////////
+
+                //Traigo todos los productos de products.json
+             let allProds = await prodManager.getProducts();
+
+
+            //Filtro por seleccion de PID
+            const prodsfilter = await allProds.filter( (prod) =>{
+
+                return prod.id == pid ;   
+        })
+
+                if (!prodsfilter.length) {
+
+                    console.log("Este producto de ID ",pid," no existe");
+                    return
+
+                }else{
+
+                    //Genero una copia con MAP agregando el quantity 
+                    //Y lo retorno
+                    const cidparseado = await parseInt(cid)
+
+                    const prodDetails = await prodsfilter.map((pd)=>{
+
+                        return{
+                            cid: cidparseado,
+                            pid: pd.id,
+                            quantity: this.#getQUANTITY()
+                            
+                        }
+
+                })
+
+                  const newObjectFromProdsDetails = await prodDetails[0];
+
+
+                  //Generando nuevo array sin el cid anterior y desactualizado
+                    const newAllcarts = await allCarts.filter((prod) =>{
+
+                        return prod.cid !== cidparseado
+                    } )
+
+                    await newAllcarts.push(newObjectFromProdsDetails)
+
+                     await fs.promises.writeFile('./carts.json', JSON.stringify(newAllcarts))
+
+                  return newAllcarts
+
+                }
+
+
+/////////////////--------------------------------------------///////////////////////////
+
+                         //Actualizando objeto seleccionado por CID de cart Products
+                    //    const updatingProdCart = await filterProdCart.map((prodcart)=>{
+
+                    //          return {
+                    //             cid: prodcart.id,
+                    //             pid: newObjectFromProdsDetails.pid,
+                    //             quantity: newObjectFromProdsDetails.quantity
+                    //          }
+
+                    //   })
+                         
+                            
+                    
+
+                    
                      
-                     return updatingProdCart
+                    //     return await newAllcarts
 
 
             } catch (error) {

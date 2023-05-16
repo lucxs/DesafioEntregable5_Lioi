@@ -54,6 +54,8 @@ prodsRouter.get('/:pid', async (req,res)=>{
 
 })
 
+    //Creando y añadiendo productos nuevos
+
 prodsRouter.post('/', async(req, res)=>{
 
 
@@ -62,8 +64,9 @@ prodsRouter.post('/', async(req, res)=>{
         //Añado productos
        await prodManager.addProduct("televisor", "Panaphonic", 223655, "thumnail",125544887, 12, true,"televisores");
        
-       await prodManager.addProduct("televisor", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
-      
+        await prodManager.addProduct("televisor2", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
+        
+        await prodManager.addProduct("televisor3", "Sorny", 552268, "thumnail",125544887, 5, true,"televisores");
        
         
        //Envio respuesta si salio todo bien

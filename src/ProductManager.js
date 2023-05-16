@@ -4,7 +4,6 @@ import fs from 'fs';
 export default class productManager{
     #id = 0;
     #path = undefined;
-     #quantity = 0;
           constructor(){                 
                         if (!fs.existsSync('./products.json')) {
 
@@ -24,9 +23,17 @@ export default class productManager{
 
 
        async addProduct(title = undefined, description = undefined, price = undefined, thumbnail = undefined, code = undefined, stock = undefined, status = undefined, category = undefined){
-
                 
             try {
+
+                let allProds = await this.getProducts()
+                let filter = await allProds.filter((element)=>element.code === code )
+                if (filter.length > 0) {
+                    
+                     console.log("YA EXISTE UN PRODUCTO CON EL CODE QUE INTENTA INGRESAR");
+                     return
+                }
+
                 const product = await {
 
                     title: title,
@@ -232,56 +239,7 @@ export default class productManager{
                         
         }
 
-        //Configurando el auto incremento del quantity
-
-        #getQUANTITY(){
-
-            this.#quantity++;
-            return this.#quantity;
-        }
-
-        //Aqui creo el metodo para tomar unicamente el ID del producto 
-        //Según el PID que me llega desde la solicitud en cartsRouter.post('/:cid/product/:pid')
-
-        async DetailsProdsToCart(pid){
-
-            try {
-                    //Parseo a numerico el PID
-                let id = await parseInt(pid);
-
-                    //Traigo todos los productos de products.json
-                let allProds = await this.getProducts();
-
-
-                const prodsfilter = await allProds.filter( (prod) =>{
-
-                        return prod.id === id ;   
-                })
-
-                
-                    //Genero una copia con MAP agregando el quantity 
-                    //Y lo retorno
-                const prodId = await prodsfilter.map((pd)=>{
-
-                        return{
-
-                            pid: pd.id,
-                            quantity : this.#getQUANTITY()
-                        }
-
-                })
-
-                
-                return prodId;
-                
-            } catch (error) {
-
-                console.log("Hubo un error en ProductManager.DetailsProdsToCart ==>",error);
-                
-            }
-
-
-        }
+        
 
 }
 
