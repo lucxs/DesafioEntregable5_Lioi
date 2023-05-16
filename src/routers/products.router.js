@@ -62,18 +62,20 @@ prodsRouter.post('/', async(req, res)=>{
     try {
 
         //Añado productos
-       await prodManager.addProduct("televisor", "Panaphonic", 223655, "thumnail",125544887, 12, true,"televisores");
+    //    await prodManager.addProduct("televisor", "Panaphonic", 223655, "thumnail",125544887, 12, true,"televisores");
 
-    //Control de duplicados por CODE
-    await securityFilter(125544887);
+    // //Control de duplicados por CODE
+    // await securityFilter(125544887);
        
-        await prodManager.addProduct("televisor2", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
-            await securityFilter(1255558742);
-        
-        // await prodManager.addProduct("televisor4", "Sorny", 552268, "thumnail",125544, 5, true,"televisores");
+        // await prodManager.addProduct("televisor2", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
+        //     await securityFilter(1255558742);
+
+
+            //A este ultimo le copio el mismo CODE del producto dos, para verificacion de funcion de seguridad
+         await prodManager.addProduct("televisor4", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
 
         // //Control de duplicados por CODE
-        // await securityFilter(125544);
+         await securityFilter(1255558742);
 
         
     } catch (error) {
