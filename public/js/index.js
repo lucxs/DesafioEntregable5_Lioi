@@ -8,29 +8,24 @@ socket.on('products', (allprods)=>{
 })
 
 
-     function productsRender(allprods){
+      function productsRender(allprods){
 
-
-    console.log("Todos los prods",allprods);
-
-
+     
      const html = allprods.map((prod)=>{
      
          return `
-         <div>
+         <div class="prodCars">
              <ul>
                 <li class="idoculto">${prod.id}</li>
-                 <li>${prod.title}</li>
-                 <li>${prod.description}</li>
-                 <li>${prod.price}</li>
-                 <li>${prod.thumbnail}</li>
-                 <li>${prod.code}</li>
-                 <li>${prod.stock}</li>
-                 <li>${prod.status}</li>
-                 <li>${prod.category}</li>
+                 <li>Title: ${prod.title}</li>
+                 <li>Description: ${prod.description}</li>
+                 <li>Price: ${prod.price}</li>
+                 <li>thumbnail: ${prod.thumbnail}</li>
+                 <li>Code: ${prod.code}</li>
+                 <li>Stock: ${prod.stock}</li>
+                 <li>Status: ${prod.status}</li>
+                 <li>Category: ${prod.category}</li>
              </ul>
-
-                <button onClick="deleteProd()">Eliminar</button>
          
          </div>
          
@@ -40,13 +35,12 @@ socket.on('products', (allprods)=>{
      document.getElementById('listProductsRealTime').innerHTML = html
 
 
-   
-
 }
     //Funcion del onclick para agregar productos
 
 function addProduct(){
     
+    event.preventDefault()
 
     let title = document.getElementById("title").value
     let description = document.getElementById("description").value
@@ -59,13 +53,22 @@ function addProduct(){
 
     socket.emit('addingProds', {"title": title,"description":description,"price":price,"thumbnail":thumbnail,"code":code,"stock":stock,"status":status,"category":category})
 
-
+        alert("Se agrego un nuevo producto")
 }
 
 
-//Funcion del onclick para agregar productos
+//Funcion del onclick para eliminar productos
 
 
 
+ function deleteProd(){
+
+    event.preventDefault()
+
+    let idProd = document.getElementById("idprod").value
+
+              socket.emit('prodIdToDelete', idProd)
+
+}
 
 

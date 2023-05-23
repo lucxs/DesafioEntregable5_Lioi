@@ -79,10 +79,26 @@ socketServer.on('connection', async (socket)=>{
             
 
         })
+
+        //Elimino el producto
+
+        socket.on('prodIdToDelete', async(data)=>{
+
+            try {
+
+                 await prdManager.deleteProduct(data)
+                
+            } catch (error) {
+
+                console.log("Error en app.js en el envio del id para deletear producto ==>", error);
+                
+            }
+
+        })
         
     } catch (error) {
 
-        console.log("Algo salió mal =>", error);
+        console.log("Algo salió mal en el socket prodIdToDelete =>", error);
         
     }
 
