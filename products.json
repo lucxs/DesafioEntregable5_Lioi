@@ -20,6 +20,39 @@
     "status": true,
     "category": "televisores",
     "id": 2
+  },
+  {
+    "title": "televisor3",
+    "description": "Sorny",
+    "price": 552268,
+    "thumbnail": "thumnail",
+    "code": 1255558742,
+    "stock": 5,
+    "status": true,
+    "category": "televisores",
+    "id": 3
+  },
+  {
+    "title": "televisor4",
+    "description": "Sorny",
+    "price": 552268,
+    "thumbnail": "thumnail",
+    "code": 12555,
+    "stock": 5,
+    "status": true,
+    "category": "televisores",
+    "id": 4
+  },
+  {
+    "title": "PlayStation",
+    "description": "Consola de juegos",
+    "price": "3155225",
+    "thumbnail": "url",
+    "code": "123365",
+    "stock": "5",
+    "status": "true",
+    "category": "consolas",
+    "id": 5
   }
   
 ]

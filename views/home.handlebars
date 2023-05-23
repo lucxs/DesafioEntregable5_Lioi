@@ -1,0 +1,21 @@
+<main id="listProductsHome">
+
+
+    <h1>Home</h1>
+
+    <ul>
+        {{#each allprods}}
+            <li>{{this.title}}</li>
+            <li>{{this.description}}</li>
+            <li>{{this.price}}</li>
+            <br>
+            <br>
+            {{/each}}
+            
+    </ul>
+
+
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
