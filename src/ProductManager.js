@@ -15,10 +15,38 @@ export default class productManager{
 
         }
 
-        #getID() {
+        async #getID() {
             // Incremento en 1 el valor de id
-            this.#id++; 
-            return this.#id;
+
+            try {
+                const actualprods = await this.getProducts();
+                 //Filtro comparando con la cantidad de elementos dentro del array de objetos que seria el mismo valor del ID del ultimo producto
+                 let filtroID = await actualprods.some( prod => prod.id == actualprods.length )
+
+                 //Si es distinto de true es porque se reinició a cero
+                 if (!filtroID == true) {
+ 
+                     await this.#id++; 
+                     return this.#id;
+                     
+                 }else{
+                            //Si es true remplaza el valor del ID por el valor de la cantidad de elementos igual al valor del ultimo ID + 1, para el siguiente producto
+                     this.#id = await actualprods.length + 1; 
+                     console.log(filtroID);
+                     return this.#id;
+                     
+ 
+                 }
+                 
+                
+            } catch (error) {
+
+                console.log("Algo salio mal en el metodo de la asignación por ID ==>", error);
+                
+            }
+
+                   
+            
         }
 
 
@@ -47,13 +75,15 @@ export default class productManager{
             }
 
                 
+
+                
                 product.id = await this.#getID();
 
-                const actualprods = await this.getProducts();
+                   const actualprods = await this.getProducts();
 
-                await console.log(actualprods);
+                    await console.log(actualprods);
 
-                const filtro = await actualprods.filter(prod => prod.id == product.id )
+                    const filtro = await actualprods.filter(prod => prod.id == product.id )
 
                 if (filtro.length) {
 
@@ -243,10 +273,10 @@ export default class productManager{
 
 }
 
-// let pd = new productManager();
+//  let pd = new productManager();
 
 
-//  pd.addProduct("Monitor2","Monitor led 32 pulgadas 144ghz", 147600, "url", 11324, 10)
+//   pd.addProduct("Monitor2","Monitor led 32 pulgadas 144ghz", 147600, "url", 113669988, 10)
 //  pd.addProduct("Monitor3","Monitor led 32 pulgadas 144ghz", 147600, "url", 11324, 10)
 //  pd.addProduct("Monitor4","Monitor led 32 pulgadas 144ghz", 147600, "url", 11324, 10)
 
