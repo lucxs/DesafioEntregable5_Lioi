@@ -1,5 +1,6 @@
 import  express  from "express";
 import handlebars from 'express-handlebars'
+import mongoose from 'mongoose'
 import {Server} from 'socket.io'
 import {prodsRouter} from "./routers/products.router.js"
 import { cartsRouter } from "./routers/carts.router.js";
@@ -20,8 +21,9 @@ app.use('/api/carts', cartsRouter)
 
 
 
-//---------------------------------Desafio entregable 4----------------------------------------------------///////////////////////////
+//---------------------------------Desafio entregable 5----------------------------------------------------///////////////////////////
 
+mongoose.connect('mongodb+srv://lioilucas75:Lucas024!!@codercluster.fg4paop.mongodb.net/?retryWrites=true&w=majority');
 
 const httpServer = app.listen(8080, ()=> console.log("Escuchando puerto 8080"))
 
