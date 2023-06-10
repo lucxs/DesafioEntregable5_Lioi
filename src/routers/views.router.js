@@ -1,6 +1,6 @@
 import express from 'express'
-import productManager from '../ProductManager.js';
-
+//import productManager from '../dao/ProductManager.js';
+import { prodsServices } from '../dao/products.service.js';
 
 const viewRouter =express();
 
@@ -10,11 +10,13 @@ viewRouter.get('/', async(req, res)=>{
 
     try {
 
-        const prdManager = new productManager();
+        // const prdManager = new productManager();
 
-            const allprods = await prdManager.getProducts();
+        //     const allprods = await prdManager.getProducts();
 
-            await res.render('home', {allprods})
+            const allProds = await prodsServices.getProducts();
+
+            await res.render('home', {allProds})
         
     } catch (error) {
 
@@ -31,5 +33,12 @@ viewRouter.get('/realtimeproducts',(req, res)=>{
     res.render('realtimeproducts');
 
 }) 
+
+viewRouter.get('/chat', (req, res)=>{
+
+
+        res.render('chat')
+
+})
 
 export default viewRouter;

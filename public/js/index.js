@@ -1,3 +1,5 @@
+
+
 const socket = io();
 
 socket.on('products', (allprods)=>{
@@ -70,5 +72,83 @@ function addProduct(){
               socket.emit('prodIdToDelete', idProd)
 
 }
+
+
+//Seccion del chat
+
+let user;
+let Inputmsj = document.getElementById("msj")
+
+Swal.fire({
+
+    title: "Bienvenido",
+    input: 'text',
+    text: "Ingrese su correo para participar de MiChat",
+    icon: "success",
+    inputValidator: (value)=>{
+
+        return !value && 'Tenes que identificarte'
+
+    },
+
+    allowOutsideClick: false,
+
+}).then((result)=>{
+    user = result.value;
+});
+
+ 
+Inputmsj.addEventListener('keyup', event =>{
+
+
+    if (event.key == "Enter"){
+
+        let msj = Inputmsj.value;
+        if (msj.trim().length > 0){
+            socket.emit("message", {"user":user, "message":msj})
+            Inputmsj.value = '';
+        }
+    }
+
+})
+
+    async function chatRender(data){
+
+        try {
+
+            const html = await data.map((dat)=>{
+
+                return `
+                <strong>${dat.user}:</strong>
+                <p>${dat.message}</p>
+                
+                `
+                    
+            })
+            .join(' ');
+
+                document.getElementById("blockText").innerHTML = html;
+            
+        } catch (error) {
+
+            console.log("Algo esta mal en chatRender -->", error);
+            
+        }
+
+        
+}
+
+socket.on("sendingMSGs", async(data)=>{
+
+    try {
+        return await chatRender(data)
+    } catch (error) {
+        console.log(error);
+    }
+
+        
+
+
+})
 
 

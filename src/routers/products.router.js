@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-import productManager from "../ProductManager.js";
+import productManager from "../dao/ProductManager.js";
+import { prodsServices } from "../dao/products.service.js";
 
 const prodsRouter = Router();
 
@@ -10,8 +11,10 @@ const prodManager = new productManager();
 prodsRouter.get('/', async (req, res)=>{
 
     try {
+                //Esto queda del sistema anterior con FileSystem
+        // let allProds = await prodManager.getProducts();
 
-        let allProds = await prodManager.getProducts();
+            let allProds = await prodsServices.getProducts();
 
         let LimitProducts = req.query.limit;
         

@@ -5,7 +5,9 @@ import {Server} from 'socket.io'
 import {prodsRouter} from "./routers/products.router.js"
 import { cartsRouter } from "./routers/carts.router.js";
 import viewRouter from './routers/views.router.js'
-import productManager from "./ProductManager.js";
+// import productManager from "./dao/ProductManager.js";
+import { prodsServices } from "./dao/products.service.js";
+import { msgService } from "./dao/message.service.js";
 
 const app = express();
 
@@ -42,36 +44,47 @@ socketServer.on('connection', async (socket)=>{
 
     try {
 
-        const prdManager = new productManager();
+//----------------------Traer prods con fileSystem------------------//
 
-        const allprods = await prdManager.getProducts();
+    //     const prdManager = new productManager();
 
-        console.log("Nuevo cliente conectado");
+    //     const allprods = await prdManager.getProducts();
 
-    //Envio la lista de productos
+ //------------------------------------------------------------------//       
 
-          socket.emit('products', allprods);
+                //Traer con ProductsServices y MongoDB//
+
+                const allprods = await prodsServices.getProducts()
+
+    //     console.log("Nuevo cliente conectado");
+
+    // //Envio la lista de productos
+
+           socket.emit('products', allprods);
 
     // Recibiendo caracterisiticas de producto nuevo
 
         socket.on('addingProds', async(data)=>{
 
             try {
+                //-----------Agrego el producto en el fileSystem---------------------------
 
                 //guardando en variables el valor de cada dato del objeto
 
-                let title = data.title;
-                let description = data.description;
-                let price = data.price;
-                let thumbnail = data.thumbnail;
-                let code = data.code;
-                let stock = data.stock;
-                let status = data.status;
-                let category = data.category;
+                // let title = data.title;
+                // let description = data.description;
+                // let price = data.price;
+                // let thumbnail = data.thumbnail;
+                // let code = data.code;
+                // let stock = data.stock;
+                // let status = data.status;
+                // let category = data.category;
 
-                //Agrego el producto
+            //  await prdManager.addProduct(title, description, price, thumbnail, code, stock, status, category)
+//-----------------------------------------Hasta acá FileSystem------------------------------------------//
+                //Agrego producto en con Products.Service y usando Mongo
 
-             await prdManager.addProduct(title, description, price, thumbnail, code, stock, status, category)
+                await prodsServices.addProduct(data);
                 
             } catch (error) {
 
@@ -89,7 +102,8 @@ socketServer.on('connection', async (socket)=>{
 
             try {
 
-                 await prdManager.deleteProduct(data)
+                 //await prdManager.deleteProduct(data)
+                 await prodsServices.deleteProduct(data)
                 
             } catch (error) {
 
@@ -98,10 +112,37 @@ socketServer.on('connection', async (socket)=>{
             }
 
         })
+
+
+                //Socket chat
+
+
+                socket.on("message", async(data)=>{
+
+                            try {
+
+
+                                 await msgService.addMessages(data)
+
+                                 const MSGS = await msgService.getMessages()
+
+                                 return await socketServer.emit("sendingMSGs", MSGS)
+                                
+                            } catch (error) {
+
+                                console.log(error
+                                    );
+                                
+                            }
+                       
+                        
+
+                })
+
         
     } catch (error) {
 
-        console.log("Algo salió mal en el socket prodIdToDelete =>", error);
+        console.log("Algo salió mal en el socket connection =>", error);
         
     }
 
