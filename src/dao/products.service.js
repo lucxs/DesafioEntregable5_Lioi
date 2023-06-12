@@ -7,8 +7,6 @@ class productsServices {
             this.prodModel = productsModel
          }
 
-         async 
-
          
           async getProducts(){
 
@@ -31,9 +29,28 @@ class productsServices {
 
           }
 
+
+          async updateProduct(id, newObject){
+            try {
+               const filtro = {};
+               filtro[newObject.campo] = newObject.valor;
+                           return await this.prodModel.updateOne({_id:id},{$set: filtro})
+                    
+            } catch (error) {
+                
+                console.log(error);
+            }
+            
+        
+
+    }
+
+
+
           async deleteProduct(data){
 
-            return this.prodModel.deleteOne({_id: data})
+             await this.prodModel.deleteOne({_id: data.toString()})
+
 
           }
 

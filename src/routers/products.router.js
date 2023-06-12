@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import productManager from "../dao/ProductManager.js";
+//import productManager from "../dao/ProductManager.js";
 import { prodsServices } from "../dao/products.service.js";
 
 const prodsRouter = Router();
 
 //Instancio el objeto de productManager
-const prodManager = new productManager();
+//const prodManager = new productManager();
 
 prodsRouter.get('/', async (req, res)=>{
 
@@ -65,20 +65,26 @@ prodsRouter.post('/', async(req, res)=>{
     try {
 
         //Añado productos
-    //    await prodManager.addProduct("televisor", "Panaphonic", 223655, "thumnail",125544887, 12, true,"televisores");
+    
+         //await prodManager.addProduct("televisor4", "Sorny", 552268, "thumnail",12555, 5, true,"televisores");
 
-    // //Control de duplicados por CODE
-    // await securityFilter(125544887);
-       
-        // await prodManager.addProduct("televisor2", "Sorny", 552268, "thumnail",1255558742, 5, true,"televisores");
-        //     await securityFilter(1255558742);
-
-
-            //A este ultimo le copio el mismo CODE del producto dos, para verificacion de funcion de seguridad
-         await prodManager.addProduct("televisor4", "Sorny", 552268, "thumnail",12555, 5, true,"televisores");
+         await prodsServices.addProduct({
+            "title": "Lentes de sol",
+            "description": "Lentes de sol Oakley con aumento",
+            "price": 37500,
+            "thumbnail": "url",
+            "code": 455585548,
+            "stock": 5,
+            "status": true,
+            "marca": "Oakley",
+        })
 
         // //Control de duplicados por CODE
-         await securityFilter(552268);
+         await securityFilter(455585548);
+
+         const allProds = await prodsServices.getProducts();
+
+          res.status(200).send(allProds)
 
         
     } catch (error) {
@@ -91,16 +97,17 @@ prodsRouter.post('/', async(req, res)=>{
 
         try {
 
-            const actualprods = await prodManager.getProducts();
-            const newfilter = await actualprods.filter(element => element.code == code)
+            //const actualprods = await prodManager.getProducts();
+            const actualprods = await prodsServices.getProducts();
+            const newfilter = actualprods.filter(element => element.code == code)
             if (newfilter.length > 0) {
 
-               await res.status(500).send("Este producto con code: "+code+" Ya se encuentra existente en otro producto")
+                res.status(500).send("Este producto con code: "+code+" Ya se encuentra existente en otro producto")
                 
                  return 
             }else{
 
-                    await res.status(201).send({"se Agregó un nuevo producto": actualprods})
+                 res.status(201).send({"se Agregó un nuevo producto": actualprods})
 
             }  
             
@@ -115,21 +122,21 @@ prodsRouter.post('/', async(req, res)=>{
 })
 
 //Actualizando Productos
-prodsRouter.put('/:pid', async(req, res)=>{
+prodsRouter.put('/', async(req, res)=>{
 
 try {
-        const allProds = await prodManager.getProducts();
-        const prodFilter = await allProds.filter(prod => prod.id == req.params.pid)
-        res.send({"El producto a actualizar": prodFilter})   
 
             //guardo en newObject lo que recibo del body para actualizar
      let newObject = await req.body;
+     let pid = req.query.pid;
 
-      await prodManager.updateProduct(req.params.pid, newObject);
+
+      await prodsServices.updateProduct(pid, newObject);
 
     
 } catch (error) {
     console.log(error);
+    res.status(500).send(error)
 }
 
 })
@@ -137,13 +144,14 @@ try {
 
     //Borrando productos
 
-prodsRouter.delete('/:pid', async(req, res)=>{
+prodsRouter.delete('/', async(req, res)=>{
 
 try {
 
-        await prodManager.deleteProduct(req.params.pid);
+        //await prodManager.deleteProduct(req.params.pid);
+        await prodsServices.deleteProduct(req.query.pid)
 
-        await res.status(200).send({"Producto de ID":req.params.pid+" eliminado"})
+        await res.status(200).send({"Producto de ID":req.query.pid+" eliminado"})
     
 } catch (error) {
 

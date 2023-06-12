@@ -23,10 +23,10 @@ const productsScheme = new mongoose.Schema({
     status:{
         type:Boolean
     },
-    category:{
+    marca:{
         type:String
     }
 
 })
 
-export const productsModel = mongoose.model("ecommerce", productsScheme)
+export const productsModel = mongoose.model("products", productsScheme)

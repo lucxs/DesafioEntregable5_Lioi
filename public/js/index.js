@@ -18,7 +18,7 @@ socket.on('products', (allprods)=>{
          return `
          <div class="prodCars">
              <ul>
-                <li class="idoculto">${prod.id}</li>
+                <li class="idoculto">${prod._id}</li>
                  <li>Title: ${prod.title}</li>
                  <li>Description: ${prod.description}</li>
                  <li>Price: ${prod.price}</li>
@@ -26,7 +26,7 @@ socket.on('products', (allprods)=>{
                  <li>Code: ${prod.code}</li>
                  <li>Stock: ${prod.stock}</li>
                  <li>Status: ${prod.status}</li>
-                 <li>Category: ${prod.category}</li>
+                 <li>Marca: ${prod.marca}</li>
              </ul>
          
          </div>
@@ -51,9 +51,9 @@ function addProduct(){
     let code = document.getElementById("code").value
     let stock = document.getElementById("stock").value
     let status = document.getElementById("status").value
-    let category = document.getElementById("category").value
+    let marca = document.getElementById("marca").value
 
-    socket.emit('addingProds', {"title": title,"description":description,"price":price,"thumbnail":thumbnail,"code":code,"stock":stock,"status":status,"category":category})
+    socket.emit('addingProds', {"title": title,"description":description,"price":price,"thumbnail":thumbnail,"code":code,"stock":stock,"status":status,"marca":marca})
 
         alert("Se agrego un nuevo producto")
 }
